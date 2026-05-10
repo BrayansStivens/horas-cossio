@@ -1,0 +1,212 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+
+  --color-background: hsl(var(--bg));
+  --color-foreground: hsl(var(--fg));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-fg));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-fg));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-fg));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-fg));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-fg));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-fg));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-fg));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+}
+
+/* ============================================
+   Light theme (default)
+   ============================================ */
+:root {
+  --bg: 0 0% 100%;
+  --fg: 240 10% 4%;
+  --card: 0 0% 100%;
+  --card-fg: 240 10% 4%;
+  --popover: 0 0% 100%;
+  --popover-fg: 240 10% 4%;
+  --primary: 240 6% 10%;
+  --primary-fg: 0 0% 98%;
+  --secondary: 240 5% 96%;
+  --secondary-fg: 240 6% 10%;
+  --muted: 240 5% 96%;
+  --muted-fg: 240 4% 46%;
+  --accent: 240 5% 96%;
+  --accent-fg: 240 6% 10%;
+  --destructive: 0 84% 60%;
+  --destructive-fg: 0 0% 98%;
+  --border: 240 6% 90%;
+  --input: 240 6% 90%;
+  --ring: 240 6% 10%;
+}
+
+/* ============================================
+   Dark theme
+   ============================================ */
+.dark {
+  --bg: 240 10% 4%;
+  --fg: 0 0% 98%;
+  --card: 240 8% 6%;
+  --card-fg: 0 0% 98%;
+  --popover: 240 8% 6%;
+  --popover-fg: 0 0% 98%;
+  --primary: 0 0% 98%;
+  --primary-fg: 240 6% 10%;
+  --secondary: 240 5% 12%;
+  --secondary-fg: 0 0% 98%;
+  --muted: 240 5% 12%;
+  --muted-fg: 240 5% 65%;
+  --accent: 240 5% 14%;
+  --accent-fg: 0 0% 98%;
+  --destructive: 0 72% 51%;
+  --destructive-fg: 0 0% 98%;
+  --border: 240 5% 16%;
+  --input: 240 5% 16%;
+  --ring: 240 5% 65%;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: hsl(var(--bg));
+  color: hsl(var(--fg));
+  font-family: var(--font-sans);
+  font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Disable iOS auto-zoom on inputs */
+@media (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Number input arrows hidden */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-fg) / 0.5);
+}
+
+/* Theme transition */
+html {
+  color-scheme: light;
+}
+html.dark {
+  color-scheme: dark;
+}
+
+html, body, * {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 200ms;
+  transition-timing-function: ease;
+}
+* {
+  transition-property: none;
+}
+html.transitioning,
+html.transitioning *:not(svg):not(path) {
+  transition-property: background-color, border-color, color !important;
+  transition-duration: 220ms !important;
+  transition-timing-function: ease !important;
+}
+
+/* Animation utilities */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes zoom-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes zoom-out {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.96); }
+}
+@keyframes slide-in-bottom {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+@keyframes slide-out-bottom {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+@keyframes slide-in-top {
+  from { transform: translateY(-6px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+.animate-fade-in { animation: fade-in 200ms ease forwards; }
+.animate-fade-out { animation: fade-out 180ms ease forwards; }
+.animate-zoom-in { animation: zoom-in 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-zoom-out { animation: zoom-out 160ms ease forwards; }
+.animate-slide-in-bottom { animation: slide-in-bottom 320ms cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-slide-out-bottom { animation: slide-out-bottom 220ms ease forwards; }
+.animate-shake { animation: shake 0.4s ease-in-out; }
+
+/* Focus ring */
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--bg)), 0 0 0 4px hsl(var(--ring));
+}
