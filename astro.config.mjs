@@ -8,7 +8,7 @@ const repo = 'horas-cossio';
 const isProd = /** @type {any} */ (globalThis).process?.env?.NODE_ENV === 'production';
 
 export default defineConfig({
-  site: 'https://stivens-cossio.github.io',
+  site: 'https://brayansstivens.github.io',
   base: isProd ? `/${repo}/` : '/',
   integrations: [svelte()],
   vite: {
