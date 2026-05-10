@@ -86,13 +86,19 @@
   border-color: hsl(var(--border));
 }
 
+html {
+  /* Subimos el tamaño base de 16px a 18px para mayor legibilidad
+     (especialmente útil para usuarios mayores). Tailwind v4 usa rem
+     en spacing y tipografía, así que TODO el UI escala proporcionalmente. */
+  font-size: 18px;
+}
+
 html, body {
   height: 100%;
   margin: 0;
   background: hsl(var(--bg));
   color: hsl(var(--fg));
   font-family: var(--font-sans);
-  font-size: 16px;
   line-height: 1.5;
   font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
   -webkit-font-smoothing: antialiased;
@@ -117,10 +123,10 @@ button {
   touch-action: manipulation;
 }
 
-/* Disable iOS auto-zoom on inputs */
+/* Disable iOS auto-zoom on inputs (≥16px prevents zoom) */
 @media (max-width: 768px) {
   input, select, textarea {
-    font-size: 16px !important;
+    font-size: 1rem !important;
   }
 }
 

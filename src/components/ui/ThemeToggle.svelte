@@ -36,7 +36,7 @@
   onclick={toggle}
   aria-label={isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
   class={cn(
-    'inline-flex items-center justify-center h-10 w-10 rounded-md',
+    'inline-flex items-center justify-center h-11 w-11 rounded-md',
     'border border-border bg-background text-foreground',
     'hover:bg-accent hover:text-accent-foreground',
     'transition-colors',

@@ -131,8 +131,8 @@
     <div class="flex items-center gap-3">
       <Logo size={36} />
       <div class="flex flex-col leading-tight">
-        <span class="text-sm font-semibold text-foreground">Hola, {firstName}</span>
-        <span class="text-xs text-muted-foreground tabular-nums">
+        <span class="text-base font-semibold text-foreground">Hola, {firstName}</span>
+        <span class="text-sm text-muted-foreground tabular-nums">
           CC {USER_INFO.cedulaFormatted}
         </span>
       </div>
@@ -156,8 +156,8 @@
   >
     <Card>
       <div class="p-5">
-        <div class="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-2">
-          <Clock class="size-3.5" />
+        <div class="flex items-center gap-2 text-sm uppercase tracking-wider text-muted-foreground font-semibold mb-2">
+          <Clock class="size-4" />
           <span class="capitalize">{currentMonth}</span>
         </div>
         <div class="flex items-baseline gap-1.5 mb-5">
@@ -220,11 +220,11 @@
           in:fly={{ y: 12, duration: 350, delay: gi * 50, easing: quintOut }}
         >
           <div class="flex items-center justify-between px-1 mb-1">
-            <span class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <span class="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
               {group.label}
             </span>
             <span
-              class="text-xs font-bold tabular-nums px-2 py-0.5 rounded-md bg-secondary text-foreground"
+              class="text-sm font-bold tabular-nums px-2 py-0.5 rounded-md bg-secondary text-foreground"
             >
               {formatHoras(group.total)}
             </span>

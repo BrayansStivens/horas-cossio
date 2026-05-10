@@ -7,7 +7,7 @@
     formatHoras,
   } from '../lib/date-utils';
   import type { HoursEntry, NewHoursEntry } from '../lib/supabase';
-  import { addEntry, updateEntry, placaSuggestions } from '../lib/store';
+  import { addEntry, updateEntry, entries, placaSuggestions } from '../lib/store';
   import { USER_INFO, DEFAULTS } from '../lib/constants';
   import Sheet from './ui/Sheet.svelte';
   import Button from './ui/Button.svelte';
@@ -62,6 +62,11 @@
     }
   });
 
+  let duplicateExisting = $derived.by(() => {
+    if (editing) return null;
+    return $entries.find((e) => e.fecha === fecha) ?? null;
+  });
+
   async function handleSubmit(e: Event) {
     e.preventDefault();
     if (saving) return;
@@ -71,6 +76,10 @@
     }
     if (totalHoras <= 0) {
       error = 'La hora final debe ser después de la inicial';
+      return;
+    }
+    if (!editing && duplicateExisting) {
+      error = 'Ya existe una entrada para esta fecha. Edita la que tienes en vez de crear otra.';
       return;
     }
     saving = true;
@@ -92,7 +101,12 @@
       }
       onClose();
     } catch (err: any) {
-      error = err?.message ?? 'Error al guardar';
+      const msg = err?.message ?? 'Error al guardar';
+      if (/duplicate|unique/i.test(msg)) {
+        error = 'Ya existe una entrada para esta fecha.';
+      } else {
+        error = msg;
+      }
     } finally {
       saving = false;
     }
@@ -117,6 +131,15 @@
     <div class="flex flex-col gap-1.5">
       <Label for="fecha">Fecha</Label>
       <DatePicker value={fecha} onChange={(v) => (fecha = v)} />
+      {#if duplicateExisting}
+        <div
+          class="flex items-start gap-2 mt-1 px-3 py-2 rounded-md border border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-200 text-sm"
+          in:fade={{ duration: 200 }}
+        >
+          <span class="text-base leading-none">⚠️</span>
+          <span>Ya hay una entrada para este día. No puedes crear otra — edita la existente.</span>
+        </div>
+      {/if}
     </div>
 
     <div class="grid grid-cols-2 gap-3">
@@ -205,6 +228,7 @@
         type="submit"
         class="flex-1"
         loading={saving}
+        disabled={!editing && !!duplicateExisting}
         onclick={handleSubmit}
       >
         {editing ? 'Guardar' : 'Registrar'}

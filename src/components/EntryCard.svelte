@@ -68,7 +68,7 @@
     <div class="text-base font-bold leading-none tabular-nums">{day}</div>
     <div
       class={cn(
-        'text-[9px] uppercase tracking-wider mt-0.5 font-semibold',
+        'text-[11px] uppercase tracking-wider mt-0.5 font-semibold',
         isToday ? 'text-primary-foreground/70' : 'text-muted-foreground',
       )}
     >
@@ -93,13 +93,13 @@
         {entry.hora_final.slice(0, 5)}
       </span>
       <span
-        class="ml-auto inline-flex items-center px-2 py-0.5 rounded-md bg-primary/10 dark:bg-primary/20 text-primary text-xs font-bold tabular-nums"
+        class="ml-auto inline-flex items-center px-2 py-0.5 rounded-md bg-primary/10 dark:bg-primary/20 text-primary text-sm font-bold tabular-nums"
       >
         {formatHoras(Number(entry.total_horas))}
       </span>
     </div>
 
-    <div class="flex items-center gap-2 mt-1 text-xs text-muted-foreground flex-wrap">
+    <div class="flex items-center gap-2 mt-1 text-sm text-muted-foreground flex-wrap">
       {#if entry.placa}
         <span class="inline-flex items-center gap-1">
           <Truck class="size-3" />
@@ -121,7 +121,7 @@
           e.stopPropagation();
           onMarkExitNow(entry);
         }}
-        class="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-primary/40 bg-primary/5 dark:bg-primary/15 text-primary text-xs font-semibold hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors"
+        class="mt-2 inline-flex items-center gap-1.5 px-3 py-2 rounded-md border border-primary/40 bg-primary/5 dark:bg-primary/15 text-primary text-sm font-semibold hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors"
       >
         <LogOut class="size-3" />
         Marcar salida ahora
