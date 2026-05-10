@@ -8,7 +8,7 @@
   } from '../lib/date-utils';
   import type { HoursEntry, NewHoursEntry } from '../lib/supabase';
   import { addEntry, updateEntry, placaSuggestions } from '../lib/store';
-  import { USER_INFO } from '../lib/constants';
+  import { USER_INFO, DEFAULTS } from '../lib/constants';
   import Sheet from './ui/Sheet.svelte';
   import Button from './ui/Button.svelte';
   import Input from './ui/Input.svelte';
@@ -52,11 +52,11 @@
         placa = editing.placa ?? '';
       } else {
         fecha = todayISO();
-        horaInicio = '';
-        horaFinal = '';
-        manifiesto = '';
+        horaInicio = DEFAULTS.horaInicio;
+        horaFinal = DEFAULTS.horaFinal;
+        manifiesto = DEFAULTS.manifiesto;
         conductor = USER_INFO.conductorDefault;
-        placa = '';
+        placa = DEFAULTS.placa;
       }
       error = null;
     }

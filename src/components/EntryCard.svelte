@@ -7,8 +7,9 @@
   import ArrowRight from '@lucide/svelte/icons/arrow-right';
   import FileText from '@lucide/svelte/icons/file-text';
   import Truck from '@lucide/svelte/icons/truck';
+  import LogOut from '@lucide/svelte/icons/log-out';
   import type { HoursEntry } from '../lib/supabase';
-  import { formatHoras } from '../lib/date-utils';
+  import { formatHoras, todayISO } from '../lib/date-utils';
   import { format, parseISO } from 'date-fns';
   import { es } from 'date-fns/locale';
   import { cn } from '../lib/cn';
@@ -17,11 +18,13 @@
     entry,
     onEdit,
     onDelete,
+    onMarkExitNow,
     index = 0,
   }: {
     entry: HoursEntry;
     onEdit: (e: HoursEntry) => void;
     onDelete: (e: HoursEntry) => void;
+    onMarkExitNow?: (e: HoursEntry) => void;
     index?: number;
   } = $props();
 
@@ -35,6 +38,7 @@
   let parsed = $derived(parseISO(entry.fecha));
   let day = $derived(parsed.getDate());
   let monthShort = $derived(format(parsed, 'MMM', { locale: es }));
+  let isToday = $derived(entry.fecha === todayISO());
 </script>
 
 <svelte:window
@@ -45,23 +49,42 @@
 
 <div
   class={cn(
-    'group relative flex items-center gap-3 p-3 rounded-lg border border-border bg-card',
-    'hover:bg-accent/40 transition-colors',
+    'group relative flex items-center gap-3 p-3 rounded-lg border bg-card transition-colors',
+    isToday
+      ? 'border-primary/50 bg-primary/[0.03] dark:bg-primary/10 hover:bg-primary/5 dark:hover:bg-primary/15'
+      : 'border-border hover:bg-accent/40',
   )}
   in:fly={{ y: 8, duration: 300, delay: index * 25, easing: quintOut }}
   out:fade={{ duration: 120 }}
 >
   <div
-    class="shrink-0 w-12 h-12 flex flex-col items-center justify-center rounded-md bg-secondary text-secondary-foreground"
+    class={cn(
+      'shrink-0 w-12 h-12 flex flex-col items-center justify-center rounded-md',
+      isToday
+        ? 'bg-primary text-primary-foreground'
+        : 'bg-secondary text-secondary-foreground',
+    )}
   >
     <div class="text-base font-bold leading-none tabular-nums">{day}</div>
-    <div class="text-[9px] uppercase tracking-wider text-muted-foreground mt-0.5 font-semibold">
+    <div
+      class={cn(
+        'text-[9px] uppercase tracking-wider mt-0.5 font-semibold',
+        isToday ? 'text-primary-foreground/70' : 'text-muted-foreground',
+      )}
+    >
       {monthShort}
     </div>
   </div>
 
   <div class="flex-1 min-w-0">
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2 flex-wrap">
+      {#if isToday}
+        <span
+          class="inline-flex items-center px-1.5 py-0.5 rounded-sm bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider"
+        >
+          Hoy
+        </span>
+      {/if}
       <span class="text-sm font-semibold tabular-nums text-foreground">
         {entry.hora_inicio.slice(0, 5)}
       </span>
@@ -90,6 +113,20 @@
         </span>
       {/if}
     </div>
+
+    {#if isToday && onMarkExitNow}
+      <button
+        type="button"
+        onclick={(e) => {
+          e.stopPropagation();
+          onMarkExitNow(entry);
+        }}
+        class="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-primary/40 bg-primary/5 dark:bg-primary/15 text-primary text-xs font-semibold hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors"
+      >
+        <LogOut class="size-3" />
+        Marcar salida ahora
+      </button>
+    {/if}
   </div>
 
   <button

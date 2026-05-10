@@ -1,6 +1,14 @@
 import { writable, derived } from 'svelte/store';
 import type { HoursEntry, NewHoursEntry } from './supabase';
 import { supabase } from './supabase';
+import { DEFAULTS, USER_INFO } from './constants';
+import {
+  todayISO,
+  dayOfWeekColombia,
+  computeTotalHoras,
+} from './date-utils';
+
+const AUTO_CREATE_KEY = 'horas-cossio-last-auto-create';
 
 export const session = writable<{ userId: string | null; loading: boolean }>({
   userId: null,
@@ -89,3 +97,53 @@ export const totalHorasMes = derived(entries, ($entries) => {
     })
     .reduce((acc, e) => acc + Number(e.total_horas), 0);
 });
+
+/**
+ * Crea automáticamente la entrada de HOY si:
+ *  - Hoy es lunes a sábado (no domingos)
+ *  - No existe ya una entrada para hoy
+ *  - No fue auto-creada antes hoy (respeta si el usuario la borró manualmente)
+ */
+export async function ensureTodayEntry(userId: string): Promise<void> {
+  if (typeof window === 'undefined') return;
+
+  const today = todayISO();
+  const dow = dayOfWeekColombia();
+
+  // 0 = Domingo → no auto-crear
+  if (dow === 0) return;
+
+  // Si ya marcamos hoy como auto-creado, respetamos (aunque el usuario lo haya borrado)
+  const lastAutoCreate = window.localStorage.getItem(AUTO_CREATE_KEY);
+  if (lastAutoCreate === today) return;
+
+  // Doble check en Supabase por si localStorage fue limpiado
+  const { data: existing } = await supabase
+    .from('hours_entries')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('fecha', today)
+    .maybeSingle();
+
+  if (existing) {
+    window.localStorage.setItem(AUTO_CREATE_KEY, today);
+    return;
+  }
+
+  const payload: NewHoursEntry = {
+    fecha: today,
+    hora_inicio: DEFAULTS.horaInicio,
+    hora_final: DEFAULTS.horaFinal,
+    total_horas: computeTotalHoras(DEFAULTS.horaInicio, DEFAULTS.horaFinal),
+    manifiesto: DEFAULTS.manifiesto || null,
+    conductor: USER_INFO.conductorDefault,
+    placa: DEFAULTS.placa,
+  };
+
+  try {
+    await addEntry(payload, userId);
+    window.localStorage.setItem(AUTO_CREATE_KEY, today);
+  } catch (err) {
+    console.error('Auto-create today failed:', err);
+  }
+}

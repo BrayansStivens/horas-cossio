@@ -18,14 +18,16 @@
     entriesLoading,
     loadEntries,
     deleteEntry,
+    updateEntry,
     totalHorasMes,
+    ensureTodayEntry,
   } from '../lib/store';
   import { signOut } from '../lib/auth';
   import { USER_INFO } from '../lib/constants';
   import { format, parseISO } from 'date-fns';
   import { es } from 'date-fns/locale';
   import type { HoursEntry } from '../lib/supabase';
-  import { formatHoras } from '../lib/date-utils';
+  import { formatHoras, nowHHMMColombia, computeTotalHoras } from '../lib/date-utils';
 
   let {
     userId,
@@ -38,7 +40,11 @@
   let confirmDelete = $state<HoursEntry | null>(null);
   let logoutOpen = $state(false);
 
-  loadEntries();
+  async function init() {
+    await loadEntries();
+    await ensureTodayEntry(userId);
+  }
+  init();
 
   function openNew() {
     editing = null;
@@ -52,6 +58,18 @@
 
   function askDelete(e: HoursEntry) {
     confirmDelete = e;
+  }
+
+  async function markExitNow(e: HoursEntry) {
+    const now = nowHHMMColombia();
+    try {
+      await updateEntry(e.id, {
+        hora_final: now,
+        total_horas: computeTotalHoras(e.hora_inicio.slice(0, 5), now),
+      });
+    } catch (err) {
+      console.error('Mark exit now failed:', err);
+    }
   }
 
   async function doDelete() {
@@ -218,6 +236,7 @@
                 index={i}
                 onEdit={openEdit}
                 onDelete={askDelete}
+                onMarkExitNow={markExitNow}
               />
             {/each}
           </div>

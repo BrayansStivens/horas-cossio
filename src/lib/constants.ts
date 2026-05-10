@@ -9,4 +9,14 @@ export const USER_INFO = {
   version: '01',
 } as const;
 
+/** Valores precargados para cada entrada nueva (manual y automática) */
+export const DEFAULTS = {
+  horaInicio: '06:00',
+  horaFinal: '19:00',
+  placa: 'WCP 677',
+  manifiesto: '',
+} as const;
+
+export const COLOMBIA_TZ = 'America/Bogota';
+
 export const SYNTHETIC_EMAIL = `cc${USER_INFO.cedula}@horas3tc.local`;

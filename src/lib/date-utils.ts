@@ -6,6 +6,7 @@ import {
   isWithinInterval,
 } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { COLOMBIA_TZ } from './constants';
 
 export type Quincena = {
   label: string;
@@ -87,8 +88,32 @@ export function formatFechaDDMMYYYY(dateStr: string): string {
   return format(parseISO(dateStr), 'dd/MM/yyyy');
 }
 
+/** "yyyy-MM-dd" para HOY en zona horaria de Colombia (America/Bogota) */
 export function todayISO(): string {
-  return format(new Date(), 'yyyy-MM-dd');
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: COLOMBIA_TZ,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date());
+}
+
+/** "HH:MM" para AHORA en zona horaria de Colombia */
+export function nowHHMMColombia(): string {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: COLOMBIA_TZ,
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(new Date());
+  return parts; // "HH:MM"
+}
+
+/** 0 = Domingo, 1 = Lunes, ..., 6 = Sábado — en Colombia */
+export function dayOfWeekColombia(): number {
+  const [y, m, d] = todayISO().split('-').map(Number);
+  const date = new Date(Date.UTC(y, m - 1, d));
+  return date.getUTCDay();
 }
 
 export function computeTotalHoras(horaInicio: string, horaFinal: string): number {
